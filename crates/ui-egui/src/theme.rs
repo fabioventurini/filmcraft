@@ -16,6 +16,9 @@ pub enum ThemeKind {
     /// Slightly lighter grey panels (Premiere's brightness slider mid position).
     Medium,
     Light,
+    /// Low-stimulation theme: warm neutrals, one accent, no competing hues. Built for sustained
+    /// use by neurodivergent people - see `docs/calm-theme.md`.
+    Calm,
 }
 
 impl ThemeKind {
@@ -25,12 +28,14 @@ impl ThemeKind {
             ThemeKind::Dark => "darkest",
             ThemeKind::Medium => "dark",
             ThemeKind::Light => "light",
+            ThemeKind::Calm => "calm",
         }
     }
     pub fn from_pref(s: &str) -> ThemeKind {
         match s {
             "dark" => ThemeKind::Medium,
             "light" => ThemeKind::Light,
+            "calm" => ThemeKind::Calm,
             _ => ThemeKind::Dark,
         }
     }
@@ -39,6 +44,7 @@ impl ThemeKind {
             "dark" | "darkest" => Some(ThemeKind::Dark),
             "medium" | "grey" | "gray" => Some(ThemeKind::Medium),
             "light" => Some(ThemeKind::Light),
+            "calm" | "lowstim" | "low stimulation" | "quiet" => Some(ThemeKind::Calm),
             _ => None,
         }
     }
@@ -148,6 +154,57 @@ impl Tokens {
         };
         match kind {
             ThemeKind::Dark => dark,
+            // Warm-neutral, single-accent, low-stimulation. Surfaces and text are the INT Digital
+            // design system's dark tokens; the greys carry a faint warm bias so nothing reads as
+            // glare, and the pure-black app background goes away. One decorative hue only: the
+            // focus/accent blue, which also serves the playhead and timecode instead of three
+            // near-identical blues. The render bar keeps three hues because they are a status
+            // cue, desaturated so they stop shouting - see docs/calm-theme.md on why that one is
+            // only half-fixed.
+            ThemeKind::Calm => Tokens {
+                app_bg: Color32::from_rgb(0x12, 0x12, 0x11),
+                header_bg: Color32::from_rgb(0x24, 0x24, 0x22),
+                panel_bg: Color32::from_rgb(0x24, 0x24, 0x22),
+                tab_bg: Color32::from_rgb(0x1a, 0x1a, 0x19),
+                tab_text: Color32::from_rgb(0xb3, 0xb1, 0xa6),
+                tab_text_active: Color32::from_rgb(0xf2, 0xf1, 0xea),
+                focus: Color32::from_rgb(0x85, 0xb7, 0xeb),
+                accent: Color32::from_rgb(0x85, 0xb7, 0xeb),
+                accent_hover: Color32::from_rgb(0x9f, 0xc8, 0xf0),
+                text: Color32::from_rgb(0xf2, 0xf1, 0xea),
+                text_dim: Color32::from_rgb(0xb3, 0xb1, 0xa6),
+                text_faint: Color32::from_rgb(0x9a, 0x98, 0x8f),
+                icon: Color32::from_rgb(0xc9, 0xc7, 0xbc),
+                icon_active: Color32::from_rgb(0xf2, 0xf1, 0xea),
+                hover: Color32::from_rgb(0x32, 0x32, 0x2f),
+                pressed: Color32::from_rgb(0x3a, 0x3a, 0x36),
+                field_bg: Color32::from_rgb(0x2c, 0x2c, 0x2a),
+                field_border: Color32::from_rgb(0x3a, 0x3a, 0x36),
+                separator: Color32::from_rgb(0x3a, 0x3a, 0x36),
+                row_alt: Color32::from_rgb(0x2a, 0x2a, 0x28),
+                row_selected: Color32::from_rgb(0x3a, 0x3a, 0x36),
+                hot_text: Color32::from_rgb(0x85, 0xb7, 0xeb),
+                tl_bg: Color32::from_rgb(0x1a, 0x1a, 0x19),
+                tl_track_bg: Color32::from_rgb(0x24, 0x24, 0x22),
+                tl_track_bg_alt: Color32::from_rgb(0x2a, 0x2a, 0x28),
+                tl_header_bg: Color32::from_rgb(0x24, 0x24, 0x22),
+                tl_ruler_bg: Color32::from_rgb(0x1a, 0x1a, 0x19),
+                tl_ruler_tick: Color32::from_rgb(0x9a, 0x98, 0x8f),
+                tl_ruler_text: Color32::from_rgb(0xb3, 0xb1, 0xa6),
+                playhead: Color32::from_rgb(0x85, 0xb7, 0xeb),
+                in_out_shade: Color32::from_rgb(0x3a, 0x3a, 0x36),
+                clip_selected_border: Color32::from_rgb(0xf2, 0xf1, 0xea),
+                render_red: Color32::from_rgb(0xd9, 0x73, 0x5e),
+                render_yellow: Color32::from_rgb(0xe0, 0xa9, 0x4a),
+                render_green: Color32::from_rgb(0x6f, 0xa8, 0x8c),
+                monitor_bg: Color32::from_rgb(0x1a, 0x1a, 0x19),
+                timecode: Color32::from_rgb(0x85, 0xb7, 0xeb),
+                danger: Color32::from_rgb(0xd9, 0x73, 0x5e),
+                radius: 6.0,
+                radius_sm: 6.0,
+                gap: 6.0,
+                ..dark
+            },
             ThemeKind::Medium => Tokens {
                 app_bg: Color32::from_rgb(20, 20, 20),
                 header_bg: Color32::from_rgb(0x32, 0x32, 0x32),
